@@ -142,6 +142,20 @@ Extracted from `tmux.html`. Reference for future cheatsheets. Goal: dense, scann
 - Vertical stack of `<code>` blocks, `0.5rem` gap
 - Use when items are commands, not key-chords
 
+### Meta links (`.meta`)
+
+```html
+<div class="meta">
+  <span><span class="label">Home</span><a href="...">example.com</a></span>
+  <span><span class="label">Install</span><code>brew install tool</code></span>
+</div>
+```
+
+- Sits under the subtitle in `<header>`. Shows tool homepage, install command, docs, admin console, etc.
+- `.label` is tiny uppercase eyebrow (`11px`, wide letter-spacing, `--text-faint`).
+- Link style: `--text-muted` with hairline underline; hover switches to `--accent`.
+- Items wrap on narrow screens via `flex-wrap`.
+
 ### Prefix note / callout
 
 ```html

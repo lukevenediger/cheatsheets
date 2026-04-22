@@ -91,6 +91,34 @@
     font-weight: 500;
   }
 
+  .meta {
+    margin-top: 0.75rem;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: baseline;
+  }
+
+  .meta .label {
+    color: var(--text-faint);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 0.4rem;
+  }
+
+  .meta a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .meta a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -199,6 +227,11 @@
 <header>
   <h1>docker cheatsheet</h1>
   <p class="subtitle">Containers, images, volumes, networks, and compose</p>
+  <div class="meta">
+    <span><span class="label">Home</span><a href="https://www.docker.com">docker.com</a></span>
+    <span><span class="label">Install</span><a href="https://docs.docker.com/get-docker/">docs.docker.com/get-docker</a></span>
+    <span><span class="label">Docs</span><a href="https://docs.docker.com">docs.docker.com</a></span>
+  </div>
   <div class="prefix-note">
     <strong>Mental model:</strong> <code>image</code> = template, <code>container</code> = running instance. <code>docker run</code> = pull + create + start. Most subcommands accept <code>&lt;name&gt;</code> or first few chars of <code>&lt;id&gt;</code>.
   </div>

@@ -91,6 +91,34 @@
     font-weight: 500;
   }
 
+  .meta {
+    margin-top: 0.75rem;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: baseline;
+  }
+
+  .meta .label {
+    color: var(--text-faint);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 0.4rem;
+  }
+
+  .meta a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .meta a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -199,6 +227,10 @@
 <header>
   <h1>zellij cheatsheet</h1>
   <p class="subtitle">Keybindings and commands for the Rust terminal multiplexer</p>
+  <div class="meta">
+    <span><span class="label">Home</span><a href="https://zellij.dev">zellij.dev</a></span>
+    <span><span class="label">Install</span><code>brew install zellij</code></span>
+  </div>
   <div class="prefix-note">
     <strong>Modes:</strong> zellij is modal. Enter a mode with <kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">letter</kbd>, then press the next key. <kbd>Esc</kbd> or <kbd>Enter</kbd> returns to Normal mode.
   </div>

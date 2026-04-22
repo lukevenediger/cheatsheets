@@ -91,6 +91,34 @@
     font-weight: 500;
   }
 
+  .meta {
+    margin-top: 0.75rem;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: baseline;
+  }
+
+  .meta .label {
+    color: var(--text-faint);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 0.4rem;
+  }
+
+  .meta a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .meta a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
@@ -199,6 +227,11 @@
 <header>
   <h1>tailscale cheatsheet</h1>
   <p class="subtitle">CLI for the WireGuard-based mesh VPN</p>
+  <div class="meta">
+    <span><span class="label">Home</span><a href="https://tailscale.com">tailscale.com</a></span>
+    <span><span class="label">Install</span><a href="https://tailscale.com/download">tailscale.com/download</a></span>
+    <span><span class="label">Admin</span><a href="https://login.tailscale.com/admin">login.tailscale.com/admin</a></span>
+  </div>
   <div class="prefix-note">
     <strong>Mental model:</strong> <code>up</code> / <code>down</code> control the connection. <code>set</code> persists flags without bouncing the connection. Admin console at <code>login.tailscale.com/admin</code> for ACLs, keys, DNS.
   </div>
