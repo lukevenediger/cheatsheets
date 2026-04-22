@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tmux cheatsheet</title>
+<style>
+  :root {
+    --bg: #faf9f5;
+    --surface: #ffffff;
+    --border: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.2);
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --text-faint: #888;
+    --accent: #c96442;
+    --kbd-bg: #f3f1e9;
+    --kbd-border: rgba(0, 0, 0, 0.15);
+    --code: #3c3a34;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #f0ece3;
+      --text-muted: #a8a59b;
+      --text-faint: #7a776e;
+      --accent: #d97757;
+      --kbd-bg: #2f2f2f;
+      --kbd-border: rgba(255, 255, 255, 0.18);
+      --code: #d0ccc0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .prefix-note {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .prefix-note strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  section {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+  }
+
+  dt {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  kbd {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--kbd-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  kbd.prefix {
+    color: var(--accent);
+  }
+
+  .plus {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin: 0 2px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    background: var(--kbd-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .cmd-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .cmd-list code {
+    display: inline-block;
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  @media print {
+    body { background: white; color: black; }
+    .container { padding: 1rem; max-width: none; }
+    section { break-inside: avoid; page-break-inside: avoid; }
+    .grid { gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>tmux cheatsheet</h1>
+  <p class="subtitle">Keyboard shortcuts and commands for the terminal multiplexer</p>
+  <div class="prefix-note">
+    <strong>Prefix key:</strong> <kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">b</kbd> by default. Shown as <kbd class="prefix">pre</kbd> below. Press prefix, release, then press the next key.
+  </div>
+</header>
+
+<div class="grid">
+
+  <section>
+    <h2>Sessions</h2>
+    <dl>
+      <dt><kbd class="prefix">pre</kbd> <kbd>d</kbd></dt>
+      <dd>Detach from session</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>s</kbd></dt>
+      <dd>List / switch sessions</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>$</kbd></dt>
+      <dd>Rename current session</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>(</kbd></dt>
+      <dd>Previous session</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>)</kbd></dt>
+      <dd>Next session</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Session CLI</h2>
+    <div class="cmd-list">
+      <code>tmux new -s mywork</code>
+      <code>tmux ls</code>
+      <code>tmux attach -t mywork</code>
+      <code>tmux attach                </code>
+      <code>tmux kill-session -t mywork</code>
+      <code>tmux kill-server</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Windows</h2>
+    <dl>
+      <dt><kbd class="prefix">pre</kbd> <kbd>c</kbd></dt>
+      <dd>Create new window</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>,</kbd></dt>
+      <dd>Rename current window</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>n</kbd></dt>
+      <dd>Next window</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>p</kbd></dt>
+      <dd>Previous window</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>0</kbd>–<kbd>9</kbd></dt>
+      <dd>Jump to window by number</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>w</kbd></dt>
+      <dd>Interactive window list</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>&amp;</kbd></dt>
+      <dd>Kill current window</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>l</kbd></dt>
+      <dd>Last active window</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Panes — splitting</h2>
+    <dl>
+      <dt><kbd class="prefix">pre</kbd> <kbd>%</kbd></dt>
+      <dd>Split vertically (left / right)</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>"</kbd></dt>
+      <dd>Split horizontally (top / bottom)</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>x</kbd></dt>
+      <dd>Kill current pane</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>z</kbd></dt>
+      <dd>Toggle pane zoom (fullscreen)</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>!</kbd></dt>
+      <dd>Break pane into its own window</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>q</kbd></dt>
+      <dd>Show pane numbers</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Panes — navigation</h2>
+    <dl>
+      <dt><kbd class="prefix">pre</kbd> <kbd>←</kbd> <kbd>↑</kbd> <kbd>↓</kbd> <kbd>→</kbd></dt>
+      <dd>Move between panes by direction</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>o</kbd></dt>
+      <dd>Cycle to next pane</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>;</kbd></dt>
+      <dd>Toggle last active pane</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>{</kbd></dt>
+      <dd>Swap pane with previous</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>}</kbd></dt>
+      <dd>Swap pane with next</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>Space</kbd></dt>
+      <dd>Cycle through layouts</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Panes — resizing</h2>
+    <dl>
+      <dt><kbd class="prefix">pre</kbd> <kbd>Ctrl</kbd><span class="plus">+</span><kbd>←</kbd></dt>
+      <dd>Resize left (hold to repeat)</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>Ctrl</kbd><span class="plus">+</span><kbd>→</kbd></dt>
+      <dd>Resize right</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>Ctrl</kbd><span class="plus">+</span><kbd>↑</kbd></dt>
+      <dd>Resize up</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>Ctrl</kbd><span class="plus">+</span><kbd>↓</kbd></dt>
+      <dd>Resize down</dd>
+
+      <dt><code>:resize-pane -D 10</code></dt>
+      <dd>Resize down by 10 (command mode)</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Copy mode &amp; scrolling</h2>
+    <dl>
+      <dt><kbd class="prefix">pre</kbd> <kbd>[</kbd></dt>
+      <dd>Enter copy mode (scroll / select)</dd>
+
+      <dt><kbd>q</kbd></dt>
+      <dd>Exit copy mode</dd>
+
+      <dt><kbd>Space</kbd></dt>
+      <dd>Start selection (in copy mode)</dd>
+
+      <dt><kbd>Enter</kbd></dt>
+      <dd>Copy selection</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>]</kbd></dt>
+      <dd>Paste most recent buffer</dd>
+
+      <dt><kbd>/</kbd> <span style="color:var(--text-faint)">or</span> <kbd>?</kbd></dt>
+      <dd>Search forward / backward</dd>
+
+      <dt><kbd>g</kbd> <span style="color:var(--text-faint)">/</span> <kbd>G</kbd></dt>
+      <dd>Jump to top / bottom</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Misc</h2>
+    <dl>
+      <dt><kbd class="prefix">pre</kbd> <kbd>:</kbd></dt>
+      <dd>Enter command mode</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>?</kbd></dt>
+      <dd>List all key bindings</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>t</kbd></dt>
+      <dd>Show clock</dd>
+
+      <dt><kbd class="prefix">pre</kbd> <kbd>r</kbd></dt>
+      <dd>Reload config (if bound)</dd>
+
+      <dt><code>:source ~/.tmux.conf</code></dt>
+      <dd>Reload config manually</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>~/.tmux.conf starter</h2>
+    <div class="cmd-list" style="font-size: 12.5px;">
+      <code># Remap prefix to Ctrl-a</code>
+      <code>unbind C-b</code>
+      <code>set -g prefix C-a</code>
+      <code>bind C-a send-prefix</code>
+      <code></code>
+      <code># Mouse support</code>
+      <code>set -g mouse on</code>
+      <code></code>
+      <code># Start windows at 1, not 0</code>
+      <code>set -g base-index 1</code>
+      <code>setw -g pane-base-index 1</code>
+      <code></code>
+      <code># Reload with prefix + r</code>
+      <code>bind r source-file ~/.tmux.conf</code>
+      <code></code>
+      <code># Vim-style pane navigation</code>
+      <code>bind h select-pane -L</code>
+      <code>bind j select-pane -D</code>
+      <code>bind k select-pane -U</code>
+      <code>bind l select-pane -R</code>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Tip: <kbd class="prefix">pre</kbd> <kbd>?</kbd> inside tmux lists every binding live. <kbd>q</kbd> exits the list.
+</footer>
+
+</div>
+</body>
+</html>
