@@ -51,7 +51,7 @@
   }
 
   .container {
-    max-width: 720px;
+    max-width: 1100px;
     margin: 0 auto;
     padding: 4rem 1.5rem 4rem;
   }
@@ -78,26 +78,24 @@
   h2 {
     font-size: 14px;
     font-weight: 500;
-    margin: 2rem 0 1rem;
+    margin: 0 0 1rem;
     text-transform: uppercase;
     letter-spacing: 0.06em;
     color: var(--text-muted);
   }
 
-  ul.sheets {
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
     list-style: none;
     padding: 0;
     margin: 0;
-    display: grid;
-    gap: 0.5rem;
   }
 
-  ul.sheets a {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    gap: 1rem;
-    padding: 1rem 1.25rem;
+  .grid a {
+    display: block;
+    padding: 1.25rem 1.5rem 1.5rem;
     background: var(--surface);
     border: 0.5px solid var(--border);
     border-radius: var(--radius-lg);
@@ -106,18 +104,82 @@
     transition: border-color 0.15s ease;
   }
 
-  ul.sheets a:hover {
+  .grid a:hover {
     border-color: var(--border-strong);
   }
 
-  ul.sheets .name {
-    font-weight: 500;
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding-bottom: 0.75rem;
+    margin-bottom: 0.75rem;
+    border-bottom: 0.5px solid var(--border);
   }
 
-  ul.sheets .desc {
+  .name {
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: -0.005em;
+  }
+
+  .desc {
     color: var(--text-muted);
-    font-size: 13.5px;
+    font-size: 12.5px;
     text-align: right;
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.4rem 1rem;
+    align-items: baseline;
+  }
+
+  dt {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 13px;
+    color: var(--text-muted);
+  }
+
+  kbd {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--kbd-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  kbd.prefix {
+    color: var(--accent);
+  }
+
+  .plus {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin: 0 2px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--code);
+    background: var(--kbd-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
   }
 
   footer {
@@ -149,31 +211,84 @@
 </header>
 
 <h2>Sheets</h2>
-<ul class="sheets">
+<ul class="grid">
+
   <li>
     <a href="tmux.html">
-      <span class="name">tmux</span>
-      <span class="desc">Keybindings &amp; commands for the terminal multiplexer</span>
+      <div class="card-head">
+        <span class="name">tmux</span>
+        <span class="desc">terminal multiplexer<br>prefix <kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">b</kbd></span>
+      </div>
+      <dl>
+        <dt><kbd class="prefix">pre</kbd> <kbd>c</kbd></dt>
+        <dd>New window</dd>
+        <dt><kbd class="prefix">pre</kbd> <kbd>%</kbd> / <kbd>"</kbd></dt>
+        <dd>Split vert / horiz</dd>
+        <dt><kbd class="prefix">pre</kbd> <kbd>d</kbd></dt>
+        <dd>Detach session</dd>
+        <dt><kbd class="prefix">pre</kbd> <kbd>[</kbd></dt>
+        <dd>Copy / scroll mode</dd>
+      </dl>
     </a>
   </li>
+
   <li>
     <a href="zellij.html">
-      <span class="name">zellij</span>
-      <span class="desc">Modal keybindings for the Rust multiplexer</span>
+      <div class="card-head">
+        <span class="name">zellij</span>
+        <span class="desc">Rust multiplexer<br>modal, <kbd>Esc</kbd> returns</span>
+      </div>
+      <dl>
+        <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">p</kbd> <kbd>n</kbd></dt>
+        <dd>New pane</dd>
+        <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">t</kbd> <kbd>n</kbd></dt>
+        <dd>New tab</dd>
+        <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">o</kbd> <kbd>d</kbd></dt>
+        <dd>Detach</dd>
+        <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">g</kbd></dt>
+        <dd>Lock input (passthrough)</dd>
+      </dl>
     </a>
   </li>
+
   <li>
     <a href="tailscale.html">
-      <span class="name">tailscale</span>
-      <span class="desc">CLI for the WireGuard-based mesh VPN</span>
+      <div class="card-head">
+        <span class="name">tailscale</span>
+        <span class="desc">mesh VPN CLI</span>
+      </div>
+      <dl>
+        <dt><code>tailscale up</code></dt>
+        <dd>Connect</dd>
+        <dt><code>tailscale status</code></dt>
+        <dd>List peers</dd>
+        <dt><code>tailscale ssh u@host</code></dt>
+        <dd>SSH via tailnet</dd>
+        <dt><code>tailscale serve 3000</code></dt>
+        <dd>Expose to tailnet</dd>
+      </dl>
     </a>
   </li>
+
   <li>
     <a href="docker.html">
-      <span class="name">docker</span>
-      <span class="desc">Containers, images, volumes, networks, compose</span>
+      <div class="card-head">
+        <span class="name">docker</span>
+        <span class="desc">containers &amp; compose</span>
+      </div>
+      <dl>
+        <dt><code>docker ps -a</code></dt>
+        <dd>All containers</dd>
+        <dt><code>docker exec -it N bash</code></dt>
+        <dd>Shell into container</dd>
+        <dt><code>docker logs -f N</code></dt>
+        <dd>Tail logs</dd>
+        <dt><code>docker compose up -d</code></dt>
+        <dd>Start stack detached</dd>
+      </dl>
     </a>
   </li>
+
 </ul>
 
 <footer>
