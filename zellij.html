@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>zellij cheatsheet</title>
+<style>
+  :root {
+    --bg: #faf9f5;
+    --surface: #ffffff;
+    --border: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.2);
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --text-faint: #888;
+    --accent: #c96442;
+    --kbd-bg: #f3f1e9;
+    --kbd-border: rgba(0, 0, 0, 0.15);
+    --code: #3c3a34;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #f0ece3;
+      --text-muted: #a8a59b;
+      --text-faint: #7a776e;
+      --accent: #d97757;
+      --kbd-bg: #2f2f2f;
+      --kbd-border: rgba(255, 255, 255, 0.18);
+      --code: #d0ccc0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .prefix-note {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .prefix-note strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  section {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+  }
+
+  dt {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  kbd {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--kbd-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  kbd.prefix {
+    color: var(--accent);
+  }
+
+  .plus {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin: 0 2px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    background: var(--kbd-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .cmd-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .cmd-list code {
+    display: inline-block;
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  @media print {
+    body { background: white; color: black; }
+    .container { padding: 1rem; max-width: none; }
+    section { break-inside: avoid; page-break-inside: avoid; }
+    .grid { gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>zellij cheatsheet</h1>
+  <p class="subtitle">Keybindings and commands for the Rust terminal multiplexer</p>
+  <div class="prefix-note">
+    <strong>Modes:</strong> zellij is modal. Enter a mode with <kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">letter</kbd>, then press the next key. <kbd>Esc</kbd> or <kbd>Enter</kbd> returns to Normal mode.
+  </div>
+</header>
+
+<div class="grid">
+
+  <section>
+    <h2>Mode switches (from Normal)</h2>
+    <dl>
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">p</kbd></dt>
+      <dd>Pane mode</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">t</kbd></dt>
+      <dd>Tab mode</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">n</kbd></dt>
+      <dd>Resize mode</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">h</kbd></dt>
+      <dd>Move mode</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">s</kbd></dt>
+      <dd>Scroll / search mode</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">o</kbd></dt>
+      <dd>Session mode</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">g</kbd></dt>
+      <dd>Lock / unlock input</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">q</kbd></dt>
+      <dd>Quit zellij</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Pane mode</h2>
+    <dl>
+      <dt><kbd>n</kbd></dt>
+      <dd>New pane (auto split)</dd>
+
+      <dt><kbd>d</kbd></dt>
+      <dd>Split down</dd>
+
+      <dt><kbd>r</kbd></dt>
+      <dd>Split right</dd>
+
+      <dt><kbd>x</kbd></dt>
+      <dd>Close pane</dd>
+
+      <dt><kbd>f</kbd></dt>
+      <dd>Toggle fullscreen</dd>
+
+      <dt><kbd>z</kbd></dt>
+      <dd>Toggle pane frames</dd>
+
+      <dt><kbd>w</kbd></dt>
+      <dd>Toggle floating panes</dd>
+
+      <dt><kbd>e</kbd></dt>
+      <dd>Embed / float pane</dd>
+
+      <dt><kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd></dt>
+      <dd>Focus pane by direction</dd>
+
+      <dt><kbd>p</kbd></dt>
+      <dd>Focus next pane</dd>
+
+      <dt><kbd>c</kbd></dt>
+      <dd>Rename pane</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Tab mode</h2>
+    <dl>
+      <dt><kbd>n</kbd></dt>
+      <dd>New tab</dd>
+
+      <dt><kbd>x</kbd></dt>
+      <dd>Close tab</dd>
+
+      <dt><kbd>r</kbd></dt>
+      <dd>Rename tab</dd>
+
+      <dt><kbd>h</kbd> / <kbd>l</kbd></dt>
+      <dd>Previous / next tab</dd>
+
+      <dt><kbd>1</kbd>–<kbd>9</kbd></dt>
+      <dd>Jump to tab by number</dd>
+
+      <dt><kbd>s</kbd></dt>
+      <dd>Toggle sync input to all panes</dd>
+
+      <dt><kbd>b</kbd></dt>
+      <dd>Break pane to new tab</dd>
+
+      <dt><kbd>]</kbd> / <kbd>[</kbd></dt>
+      <dd>Break pane to next / previous tab</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Resize mode</h2>
+    <dl>
+      <dt><kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd></dt>
+      <dd>Resize in direction</dd>
+
+      <dt><kbd>+</kbd></dt>
+      <dd>Increase</dd>
+
+      <dt><kbd>-</kbd></dt>
+      <dd>Decrease</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Move mode</h2>
+    <dl>
+      <dt><kbd>h</kbd> <kbd>j</kbd> <kbd>k</kbd> <kbd>l</kbd></dt>
+      <dd>Move pane in direction</dd>
+
+      <dt><kbd>Tab</kbd></dt>
+      <dd>Move pane to next position</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Scroll / search mode</h2>
+    <dl>
+      <dt><kbd>j</kbd> / <kbd>k</kbd></dt>
+      <dd>Scroll down / up</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>f</kbd> / <kbd>Ctrl</kbd><span class="plus">+</span><kbd>b</kbd></dt>
+      <dd>Page down / up</dd>
+
+      <dt><kbd>d</kbd> / <kbd>u</kbd></dt>
+      <dd>Half page down / up</dd>
+
+      <dt><kbd>g</kbd> / <kbd>G</kbd></dt>
+      <dd>Top / bottom</dd>
+
+      <dt><kbd>s</kbd></dt>
+      <dd>Search in buffer</dd>
+
+      <dt><kbd>e</kbd></dt>
+      <dd>Open pane buffer in editor</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Session mode</h2>
+    <dl>
+      <dt><kbd>d</kbd></dt>
+      <dd>Detach from session</dd>
+
+      <dt><kbd>w</kbd></dt>
+      <dd>Open session manager</dd>
+
+      <dt><kbd>c</kbd></dt>
+      <dd>Open configuration UI</dd>
+
+      <dt><kbd>p</kbd></dt>
+      <dd>Open plugin manager</dd>
+
+      <dt><kbd>a</kbd></dt>
+      <dd>Open about page</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>CLI</h2>
+    <div class="cmd-list">
+      <code>zellij</code>
+      <code>zellij -s mywork</code>
+      <code>zellij attach mywork</code>
+      <code>zellij attach -c mywork</code>
+      <code>zellij ls</code>
+      <code>zellij kill-session mywork</code>
+      <code>zellij kill-all-sessions</code>
+      <code>zellij delete-session mywork</code>
+      <code>zellij -l compact</code>
+      <code>zellij action new-tab</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Config &amp; layouts</h2>
+    <div class="cmd-list">
+      <code>zellij setup --dump-config &gt; \</code>
+      <code>  ~/.config/zellij/config.kdl</code>
+      <code>zellij setup --dump-layout default</code>
+      <code>~/.config/zellij/layouts/*.kdl</code>
+      <code>zellij -l ~/my.kdl</code>
+      <code># built-in layouts:</code>
+      <code>zellij -l default</code>
+      <code>zellij -l compact</code>
+      <code>zellij -l disable-status-bar</code>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Tip: <kbd>Esc</kbd> always returns to Normal mode. Stuck? <kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">g</kbd> toggles input lock so passthrough apps (vim, tmux) regain control.
+</footer>
+
+</div>
+</body>
+</html>

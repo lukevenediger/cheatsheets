@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>tailscale cheatsheet</title>
+<style>
+  :root {
+    --bg: #faf9f5;
+    --surface: #ffffff;
+    --border: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.2);
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --text-faint: #888;
+    --accent: #c96442;
+    --kbd-bg: #f3f1e9;
+    --kbd-border: rgba(0, 0, 0, 0.15);
+    --code: #3c3a34;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #f0ece3;
+      --text-muted: #a8a59b;
+      --text-faint: #7a776e;
+      --accent: #d97757;
+      --kbd-bg: #2f2f2f;
+      --kbd-border: rgba(255, 255, 255, 0.18);
+      --code: #d0ccc0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .prefix-note {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .prefix-note strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  section {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+  }
+
+  dt {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  kbd {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--kbd-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  kbd.prefix {
+    color: var(--accent);
+  }
+
+  .plus {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin: 0 2px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    background: var(--kbd-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .cmd-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .cmd-list code {
+    display: inline-block;
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  @media print {
+    body { background: white; color: black; }
+    .container { padding: 1rem; max-width: none; }
+    section { break-inside: avoid; page-break-inside: avoid; }
+    .grid { gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>tailscale cheatsheet</h1>
+  <p class="subtitle">CLI for the WireGuard-based mesh VPN</p>
+  <div class="prefix-note">
+    <strong>Mental model:</strong> <code>up</code> / <code>down</code> control the connection. <code>set</code> persists flags without bouncing the connection. Admin console at <code>login.tailscale.com/admin</code> for ACLs, keys, DNS.
+  </div>
+</header>
+
+<div class="grid">
+
+  <section>
+    <h2>Connection</h2>
+    <div class="cmd-list">
+      <code>tailscale up</code>
+      <code>tailscale up --authkey tskey-...</code>
+      <code>tailscale up --hostname=laptop</code>
+      <code>tailscale up --ssh</code>
+      <code>tailscale down</code>
+      <code>tailscale login</code>
+      <code>tailscale logout</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Status &amp; info</h2>
+    <div class="cmd-list">
+      <code>tailscale status</code>
+      <code>tailscale status --json</code>
+      <code>tailscale status --peers=false</code>
+      <code>tailscale ip</code>
+      <code>tailscale ip -4 host</code>
+      <code>tailscale whois 100.64.0.1</code>
+      <code>tailscale netcheck</code>
+      <code>tailscale ping host</code>
+      <code>tailscale version</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Persistent config (<code>set</code>)</h2>
+    <div class="cmd-list">
+      <code>tailscale set --hostname=laptop</code>
+      <code>tailscale set --ssh</code>
+      <code>tailscale set --accept-dns=true</code>
+      <code>tailscale set --accept-routes</code>
+      <code>tailscale set --shields-up</code>
+      <code>tailscale set --operator=$USER</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Exit nodes</h2>
+    <div class="cmd-list">
+      <code># advertise this node as exit</code>
+      <code>tailscale set --advertise-exit-node</code>
+      <code># use an exit node (must be approved)</code>
+      <code>tailscale set --exit-node=home-pi</code>
+      <code># allow LAN while using exit node</code>
+      <code>tailscale set \</code>
+      <code>  --exit-node-allow-lan-access</code>
+      <code># stop using exit node</code>
+      <code>tailscale set --exit-node=</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Subnet routing</h2>
+    <div class="cmd-list">
+      <code># advertise routes from this node</code>
+      <code>tailscale set \</code>
+      <code>  --advertise-routes=10.0.0.0/24</code>
+      <code># enable IP forwarding on Linux</code>
+      <code>echo 'net.ipv4.ip_forward = 1' | \</code>
+      <code>  sudo tee -a /etc/sysctl.d/99-ts.conf</code>
+      <code>sudo sysctl -p /etc/sysctl.d/99-ts.conf</code>
+      <code># accept advertised routes</code>
+      <code>tailscale set --accept-routes</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>SSH</h2>
+    <div class="cmd-list">
+      <code># enable SSH server on this node</code>
+      <code>tailscale set --ssh</code>
+      <code># connect (auth via tailnet ACLs)</code>
+      <code>tailscale ssh user@host</code>
+      <code>ssh user@host  # works once enabled</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Serve (tailnet-only)</h2>
+    <div class="cmd-list">
+      <code>tailscale serve 3000</code>
+      <code>tailscale serve --bg 3000</code>
+      <code>tailscale serve --https=443 \</code>
+      <code>  /api http://localhost:8080</code>
+      <code>tailscale serve status</code>
+      <code>tailscale serve reset</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Funnel (public internet)</h2>
+    <div class="cmd-list">
+      <code># expose to public via *.ts.net</code>
+      <code>tailscale funnel 443 on</code>
+      <code>tailscale funnel --bg 3000</code>
+      <code>tailscale funnel status</code>
+      <code>tailscale funnel reset</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>File sharing &amp; drive</h2>
+    <div class="cmd-list">
+      <code># push a file to a peer</code>
+      <code>tailscale file cp notes.md host:</code>
+      <code># receive files sent to this node</code>
+      <code>tailscale file get .</code>
+      <code># tailscale drive (SMB-like)</code>
+      <code>tailscale drive share docs ~/Documents</code>
+      <code>tailscale drive list</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Debug / troubleshoot</h2>
+    <div class="cmd-list">
+      <code>tailscale netcheck</code>
+      <code>tailscale ping --tsmp host</code>
+      <code>tailscale bugreport</code>
+      <code>tailscale debug daemon-logs</code>
+      <code>journalctl -u tailscaled -f</code>
+      <code># macOS client logs</code>
+      <code>log stream --predicate \</code>
+      <code>  'subsystem contains "tailscale"'</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>MagicDNS</h2>
+    <dl>
+      <dt><code>host</code></dt>
+      <dd>Resolves to tailnet IP (if MagicDNS on)</dd>
+
+      <dt><code>host.tailnet.ts.net</code></dt>
+      <dd>Full FQDN form</dd>
+
+      <dt><code>*.ts.net</code></dt>
+      <dd>Reserved for tailscale hostnames</dd>
+
+      <dt><code>100.x.x.x</code></dt>
+      <dd>CGNAT range used by tailnet IPs</dd>
+    </dl>
+  </section>
+
+</div>
+
+<footer>
+  Tip: <code>tailscale status</code> shows who's online, their OS, and active routes. <code>tailscale netcheck</code> diagnoses NAT / DERP issues when nodes can't see each other.
+</footer>
+
+</div>
+</body>
+</html>

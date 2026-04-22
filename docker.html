@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>docker cheatsheet</title>
+<style>
+  :root {
+    --bg: #faf9f5;
+    --surface: #ffffff;
+    --border: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.2);
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --text-faint: #888;
+    --accent: #c96442;
+    --kbd-bg: #f3f1e9;
+    --kbd-border: rgba(0, 0, 0, 0.15);
+    --code: #3c3a34;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #f0ece3;
+      --text-muted: #a8a59b;
+      --text-faint: #7a776e;
+      --accent: #d97757;
+      --kbd-bg: #2f2f2f;
+      --kbd-border: rgba(255, 255, 255, 0.18);
+      --code: #d0ccc0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .prefix-note {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .prefix-note strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  section {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+  }
+
+  dt {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  kbd {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--kbd-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  kbd.prefix {
+    color: var(--accent);
+  }
+
+  .plus {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin: 0 2px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    background: var(--kbd-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .cmd-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .cmd-list code {
+    display: inline-block;
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  @media print {
+    body { background: white; color: black; }
+    .container { padding: 1rem; max-width: none; }
+    section { break-inside: avoid; page-break-inside: avoid; }
+    .grid { gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>docker cheatsheet</h1>
+  <p class="subtitle">Containers, images, volumes, networks, and compose</p>
+  <div class="prefix-note">
+    <strong>Mental model:</strong> <code>image</code> = template, <code>container</code> = running instance. <code>docker run</code> = pull + create + start. Most subcommands accept <code>&lt;name&gt;</code> or first few chars of <code>&lt;id&gt;</code>.
+  </div>
+</header>
+
+<div class="grid">
+
+  <section>
+    <h2>Images</h2>
+    <div class="cmd-list">
+      <code>docker pull image:tag</code>
+      <code>docker images</code>
+      <code>docker image ls --filter dangling=true</code>
+      <code>docker rmi image:tag</code>
+      <code>docker image prune</code>
+      <code>docker image prune -a</code>
+      <code>docker build -t name:tag .</code>
+      <code>docker build --no-cache -t n:t .</code>
+      <code>docker tag src:tag registry/n:tag</code>
+      <code>docker push registry/n:tag</code>
+      <code>docker save img:tag &gt; img.tar</code>
+      <code>docker load &lt; img.tar</code>
+      <code>docker history image:tag</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Run containers</h2>
+    <div class="cmd-list">
+      <code>docker run image</code>
+      <code>docker run -it image bash</code>
+      <code>docker run -d image        # detached</code>
+      <code>docker run --rm image      # auto-clean</code>
+      <code>docker run --name app image</code>
+      <code>docker run -p 8080:80 image</code>
+      <code>docker run -v $PWD:/app image</code>
+      <code>docker run -v data:/var image</code>
+      <code>docker run -e KEY=val image</code>
+      <code>docker run --env-file .env image</code>
+      <code>docker run --network=host image</code>
+      <code>docker run --restart=unless-stopped</code>
+      <code>docker run -u 1000:1000 image</code>
+      <code>docker run --cpus=2 --memory=1g</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Manage containers</h2>
+    <div class="cmd-list">
+      <code>docker ps</code>
+      <code>docker ps -a</code>
+      <code>docker stop name</code>
+      <code>docker start name</code>
+      <code>docker restart name</code>
+      <code>docker kill name          # SIGKILL</code>
+      <code>docker rm name</code>
+      <code>docker rm -f $(docker ps -aq)</code>
+      <code>docker logs name</code>
+      <code>docker logs -f --tail 100 name</code>
+      <code>docker exec -it name bash</code>
+      <code>docker inspect name</code>
+      <code>docker stats</code>
+      <code>docker top name</code>
+      <code>docker cp file name:/path</code>
+      <code>docker cp name:/path file</code>
+      <code>docker commit name img:tag</code>
+      <code>docker diff name          # fs changes</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Volumes</h2>
+    <div class="cmd-list">
+      <code>docker volume create mydata</code>
+      <code>docker volume ls</code>
+      <code>docker volume inspect mydata</code>
+      <code>docker volume rm mydata</code>
+      <code>docker volume prune</code>
+      <code># bind vs named volume</code>
+      <code>-v $PWD:/app         # bind mount</code>
+      <code>-v mydata:/data      # named volume</code>
+      <code>-v /data             # anonymous</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Networks</h2>
+    <div class="cmd-list">
+      <code>docker network ls</code>
+      <code>docker network create mynet</code>
+      <code>docker network create \</code>
+      <code>  --driver bridge \</code>
+      <code>  --subnet 172.28.0.0/16 mynet</code>
+      <code>docker network inspect mynet</code>
+      <code>docker network connect mynet name</code>
+      <code>docker network disconnect mynet name</code>
+      <code>docker network rm mynet</code>
+      <code>docker network prune</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>System</h2>
+    <div class="cmd-list">
+      <code>docker info</code>
+      <code>docker version</code>
+      <code>docker system df</code>
+      <code>docker system prune         # safe-ish</code>
+      <code>docker system prune -a --volumes</code>
+      <code>docker login</code>
+      <code>docker logout</code>
+      <code>docker context ls</code>
+      <code>docker context use myctx</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Dockerfile essentials</h2>
+    <div class="cmd-list">
+      <code>FROM node:20-alpine AS build</code>
+      <code>WORKDIR /app</code>
+      <code>COPY package*.json ./</code>
+      <code>RUN npm ci</code>
+      <code>COPY . .</code>
+      <code>RUN npm run build</code>
+      <code></code>
+      <code>FROM nginx:alpine</code>
+      <code>COPY --from=build /app/dist \</code>
+      <code>  /usr/share/nginx/html</code>
+      <code>ENV NODE_ENV=production</code>
+      <code>ARG VERSION=dev</code>
+      <code>EXPOSE 80</code>
+      <code>USER 1000</code>
+      <code>HEALTHCHECK --interval=30s \</code>
+      <code>  CMD curl -f http://localhost/ || exit 1</code>
+      <code>ENTRYPOINT ["nginx"]</code>
+      <code>CMD ["-g", "daemon off;"]</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Compose</h2>
+    <div class="cmd-list">
+      <code>docker compose up</code>
+      <code>docker compose up -d</code>
+      <code>docker compose up --build</code>
+      <code>docker compose down</code>
+      <code>docker compose down -v     # w/ volumes</code>
+      <code>docker compose ps</code>
+      <code>docker compose logs -f</code>
+      <code>docker compose logs -f service</code>
+      <code>docker compose exec service bash</code>
+      <code>docker compose run --rm service cmd</code>
+      <code>docker compose build</code>
+      <code>docker compose build --no-cache</code>
+      <code>docker compose pull</code>
+      <code>docker compose restart service</code>
+      <code>docker compose config      # validate</code>
+      <code>docker compose -f prod.yml up</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Debug &amp; inspect</h2>
+    <div class="cmd-list">
+      <code># what's eating disk</code>
+      <code>docker system df -v</code>
+      <code># container exit code &amp; reason</code>
+      <code>docker inspect name \</code>
+      <code>  --format='{{.State.ExitCode}} \</code>
+      <code>  {{.State.Error}}'</code>
+      <code># get IP of running container</code>
+      <code>docker inspect name \</code>
+      <code>  --format='{{.NetworkSettings.IPAddress}}'</code>
+      <code># stream events</code>
+      <code>docker events</code>
+      <code># dump full config as JSON</code>
+      <code>docker inspect name | less</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Common patterns</h2>
+    <div class="cmd-list">
+      <code># kill everything</code>
+      <code>docker rm -f $(docker ps -aq)</code>
+      <code># nuke images</code>
+      <code>docker rmi $(docker images -q)</code>
+      <code># shell into running prod container</code>
+      <code>docker exec -it $(docker ps \</code>
+      <code>  -qf name=api) sh</code>
+      <code># one-off container, auto-clean</code>
+      <code>docker run --rm -it alpine sh</code>
+      <code># tail all compose logs</code>
+      <code>docker compose logs -f --tail=50</code>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Tip: <code>docker system prune -a --volumes</code> reclaims the most disk — but also deletes unused images / volumes. Read before running on shared machines.
+</footer>
+
+</div>
+</body>
+</html>

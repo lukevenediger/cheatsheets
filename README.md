@@ -7,6 +7,11 @@ Single-file HTML. No build step. Open in any browser or serve as a static site.
 ## Sheets
 
 - [tmux](tmux.html) — keybindings & commands for the terminal multiplexer
+- [zellij](zellij.html) — modal keybindings for the Rust multiplexer
+- [tailscale](tailscale.html) — CLI for the WireGuard-based mesh VPN
+- [docker](docker.html) — containers, images, volumes, networks, compose
+
+Live: https://lukevenediger.github.io/cheatsheets/
 
 ## Design
 
