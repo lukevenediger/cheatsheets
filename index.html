@@ -19,6 +19,8 @@
     --code: #3c3a34;
     --radius: 8px;
     --radius-lg: 12px;
+    --glow: rgba(201, 100, 66, 0.22);
+    --glow-deep: rgba(0, 0, 0, 0.08);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -34,6 +36,8 @@
       --kbd-bg: #2f2f2f;
       --kbd-border: rgba(255, 255, 255, 0.18);
       --code: #d0ccc0;
+      --glow: rgba(217, 119, 87, 0.28);
+      --glow-deep: rgba(0, 0, 0, 0.4);
     }
   }
 
@@ -101,11 +105,26 @@
     border-radius: var(--radius-lg);
     text-decoration: none;
     color: var(--text);
-    transition: border-color 0.15s ease;
+    transform: translateY(0);
+    box-shadow: 0 0 0 transparent;
+    transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+    will-change: transform;
   }
 
   .grid a:hover {
     border-color: var(--border-strong);
+    transform: translateY(-3px) scale(1.01);
+    box-shadow:
+      0 8px 28px -6px var(--glow),
+      0 2px 10px -2px var(--glow-deep);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .grid a,
+    .grid a:hover {
+      transition: none;
+      transform: none;
+    }
   }
 
   .card-head {
