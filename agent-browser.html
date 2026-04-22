@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>agent-browser cheatsheet</title>
+<style>
+  :root {
+    --bg: #faf9f5;
+    --surface: #ffffff;
+    --border: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.2);
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --text-faint: #888;
+    --accent: #c96442;
+    --kbd-bg: #f3f1e9;
+    --kbd-border: rgba(0, 0, 0, 0.15);
+    --code: #3c3a34;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #f0ece3;
+      --text-muted: #a8a59b;
+      --text-faint: #7a776e;
+      --accent: #d97757;
+      --kbd-bg: #2f2f2f;
+      --kbd-border: rgba(255, 255, 255, 0.18);
+      --code: #d0ccc0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .prefix-note {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .prefix-note strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .meta {
+    margin-top: 0.75rem;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: baseline;
+  }
+
+  .meta .label {
+    color: var(--text-faint);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 0.4rem;
+  }
+
+  .meta a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .meta a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  section {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  section.wide {
+    grid-column: 1 / -1;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+  }
+
+  dt {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  kbd {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--kbd-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  kbd.prefix {
+    color: var(--accent);
+  }
+
+  .plus {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin: 0 2px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    background: var(--kbd-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .cmd-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .cmd-list code {
+    display: inline-block;
+  }
+
+  pre {
+    margin: 0;
+    padding: 0.75rem 0.9rem;
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow-x: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    line-height: 1.5;
+  }
+
+  pre code {
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  .note {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 0.75rem;
+  }
+
+  .note strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  ul.tips {
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  ul.tips li {
+    margin-bottom: 0.4rem;
+  }
+
+  ul.tips li strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  @media print {
+    body { background: white; color: black; }
+    .container { padding: 1rem; max-width: none; }
+    section { break-inside: avoid; page-break-inside: avoid; }
+    .grid { gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>agent-browser cheatsheet</h1>
+  <p class="subtitle">Fast browser automation CLI for AI agents. Drives Chrome via CDP with stable element refs.</p>
+  <div class="meta">
+    <span><span class="label">Home</span><a href="https://agent-browser.dev">agent-browser.dev</a></span>
+    <span><span class="label">Install</span><code>brew install agent-browser</code></span>
+    <span><span class="label">Then</span><code>agent-browser install</code></span>
+  </div>
+  <div class="prefix-note">
+    <strong>Loop:</strong> <code>open</code> &rarr; <code>snapshot -i</code> (get <code>@e1</code>, <code>@e2</code> refs) &rarr; <code>click</code>/<code>fill</code>/<code>press</code> &rarr; <code>wait</code> &rarr; re-snapshot. Refs invalidate after navigation or DOM change.
+  </div>
+</header>
+
+<div class="grid">
+
+  <section>
+    <h2>Setup</h2>
+    <div class="cmd-list">
+      <code>brew install agent-browser</code>
+      <code>npm install -g agent-browser</code>
+      <code>cargo install agent-browser</code>
+      <code>agent-browser install</code>
+      <code>agent-browser install --with-deps</code>
+      <code>agent-browser --version</code>
+      <code>agent-browser doctor --fix</code>
+      <code>agent-browser upgrade</code>
+    </div>
+    <p class="note"><strong>First run:</strong> <code>install</code> downloads a bundled Chrome to <code>~/.agent-browser/browsers/</code>.</p>
+  </section>
+
+  <section>
+    <h2>Navigate &amp; inspect</h2>
+    <dl>
+      <dt><code>open &lt;url&gt;</code></dt>
+      <dd>Navigate</dd>
+      <dt><code>back</code> / <code>forward</code></dt>
+      <dd>History</dd>
+      <dt><code>reload</code></dt>
+      <dd>Reload page</dd>
+      <dt><code>snapshot -i</code></dt>
+      <dd>Interactive refs only</dd>
+      <dt><code>snapshot -c</code></dt>
+      <dd>Compact tree</dd>
+      <dt><code>snapshot -d 3</code></dt>
+      <dd>Limit depth</dd>
+      <dt><code>snapshot -s ".nav"</code></dt>
+      <dd>Scope to selector</dd>
+      <dt><code>get text @e1</code></dt>
+      <dd>Also <code>html</code>, <code>value</code>, <code>attr</code>, <code>url</code>, <code>title</code>, <code>count</code>, <code>box</code></dd>
+      <dt><code>is visible @e1</code></dt>
+      <dd>Also <code>enabled</code>, <code>checked</code></dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Interact</h2>
+    <dl>
+      <dt><code>click @e1</code></dt>
+      <dd>Click element</dd>
+      <dt><code>dblclick @e1</code></dt>
+      <dd>Double-click</dd>
+      <dt><code>fill @e1 "text"</code></dt>
+      <dd>Clear + fill input</dd>
+      <dt><code>type @e1 "text"</code></dt>
+      <dd>Append text</dd>
+      <dt><code>press Enter</code></dt>
+      <dd><code>Tab</code>, <code>Control+a</code>, etc.</dd>
+      <dt><code>hover @e1</code></dt>
+      <dd>Mouse over</dd>
+      <dt><code>focus @e1</code></dt>
+      <dd>Give focus</dd>
+      <dt><code>check @e1</code></dt>
+      <dd><code>uncheck</code> also</dd>
+      <dt><code>select @e1 "val"</code></dt>
+      <dd>Dropdown</dd>
+      <dt><code>drag @e1 @e2</code></dt>
+      <dd>Drag &amp; drop</dd>
+      <dt><code>upload @e1 f.png</code></dt>
+      <dd>File input</dd>
+      <dt><code>scroll down 500</code></dt>
+      <dd><code>up</code>/<code>down</code>/<code>left</code>/<code>right</code></dd>
+      <dt><code>scrollintoview @e1</code></dt>
+      <dd>Bring in view</dd>
+      <dt><code>wait @e1</code></dt>
+      <dd>Wait for element</dd>
+      <dt><code>wait 2000</code></dt>
+      <dd>Wait ms</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Find by locator</h2>
+    <div class="cmd-list">
+      <code>find role button click --name Submit</code>
+      <code>find text "Log in" click</code>
+      <code>find label "Email" fill me@x.com</code>
+      <code>find placeholder "Search" fill cats</code>
+      <code>find testid submit-btn click</code>
+      <code>find alt "Logo" click</code>
+      <code>find first a click</code>
+      <code>find nth a:2 click</code>
+    </div>
+    <p class="note">Use <code>find</code> when snapshots are huge or refs unstable across renders.</p>
+  </section>
+
+  <section class="wide">
+    <h2>Screenshots (tips for vision models)</h2>
+    <div class="cmd-list">
+      <code>agent-browser screenshot                       # viewport, auto-named in temp dir</code>
+      <code>agent-browser screenshot ./shot.png            # explicit path</code>
+      <code>agent-browser screenshot --full ./page.png     # full scrolling page</code>
+      <code>agent-browser screenshot --annotate            # overlays [N] labels + legend</code>
+      <code>agent-browser screenshot --annotate ./a.png    # save annotated</code>
+      <code>agent-browser screenshot ".modal" ./modal.png  # scope to selector (element shot)</code>
+      <code>agent-browser screenshot --screenshot-format jpeg --screenshot-quality 75 ./s.jpg</code>
+      <code>agent-browser screenshot --screenshot-dir ./shots</code>
+      <code>agent-browser screenshot --annotate --json     # JSON legend for agent consumption</code>
+    </div>
+    <ul class="tips">
+      <li><strong>Annotate &rarr; ref:</strong> <code>--annotate</code> labels <code>[1]</code>, <code>[2]</code>&hellip; map 1:1 to <code>@e1</code>, <code>@e2</code> from <code>snapshot -i</code>. Pass the image + legend to a vision model, get back a label, then <code>click @eN</code>.</li>
+      <li><strong>Full page vs viewport:</strong> <code>--full</code> stitches the whole scrollable page &mdash; use it to capture below-the-fold content. Otherwise only current viewport.</li>
+      <li><strong>Element shot:</strong> pass a selector before the path to crop to one element &mdash; cheaper tokens than the full page.</li>
+      <li><strong>JPEG for long pages:</strong> <code>--screenshot-format jpeg --screenshot-quality 70-85</code> cuts file size &gt;10&times; vs PNG. Use PNG only when text sharpness matters.</li>
+      <li><strong>Settle first:</strong> screenshots freeze the current frame. Call <code>wait 500</code> or <code>wait @eN</code> after <code>click</code>/<code>open</code> so animations/lazy content land before capture.</li>
+      <li><strong>Dark mode:</strong> <code>--color-scheme dark</code> on the session flag (not screenshot) forces <code>prefers-color-scheme</code>.</li>
+      <li><strong>Viewport size:</strong> <code>agent-browser set viewport 1440 900</code> before the shot &mdash; controls layout + resolution of the output.</li>
+      <li><strong>Default dir:</strong> set <code>AGENT_BROWSER_SCREENSHOT_DIR=./shots</code> in env so you don&rsquo;t pass paths each call.</li>
+    </ul>
+  </section>
+
+  <section class="wide">
+    <h2>Create a Claude skill for agent-browser</h2>
+    <p class="note">The CLI ships skill content via <code>agent-browser skills</code>. Wire it into Claude Code by dropping a <code>SKILL.md</code> at <code>~/.claude/skills/agent-browser/SKILL.md</code> &mdash; Claude loads it on session start.</p>
+    <div class="cmd-list">
+      <code>agent-browser skills list                  # all built-in skills</code>
+      <code>agent-browser skills get core              # overview + common patterns</code>
+      <code>agent-browser skills get core --full       # full command reference</code>
+      <code>agent-browser skills get electron          # specialized: electron apps</code>
+      <code>agent-browser skills get slack             # specialized: slack</code>
+      <code>agent-browser skills path core             # print directory of skill files</code>
+    </div>
+    <p class="note" style="margin-top:1rem;"><strong>One-liner install into Claude Code:</strong></p>
+<pre><code>mkdir -p ~/.claude/skills/agent-browser
+agent-browser skills get core --full &gt; ~/.claude/skills/agent-browser/SKILL.md</code></pre>
+    <p class="note" style="margin-top:0.75rem;"><strong>SKILL.md frontmatter</strong> (add at top if not already present &mdash; required by Claude Code):</p>
+<pre><code>---
+name: agent-browser
+description: Browser automation CLI for AI agents. Use when the user needs
+  to navigate pages, fill forms, click buttons, take screenshots, extract
+  data, or automate any browser task.
+allowed-tools: Bash(agent-browser:*), Bash(npx agent-browser:*)
+---</code></pre>
+    <ul class="tips" style="margin-top:0.75rem;">
+      <li><strong>Scope:</strong> user-wide at <code>~/.claude/skills/</code>, or project-scoped at <code>&lt;repo&gt;/.claude/skills/</code>. Project overrides user.</li>
+      <li><strong>Refresh:</strong> after <code>brew upgrade agent-browser</code>, re-run <code>skills get core --full &gt; SKILL.md</code> &mdash; skills are version-matched to the CLI.</li>
+      <li><strong>Discover:</strong> the <code>find-skills</code> skill in Claude Code can auto-suggest and install agent skills on demand.</li>
+      <li><strong>Verify:</strong> <code>/</code> in Claude Code then check the skill list, or look for <code>agent-browser</code> in the session&rsquo;s available-skills block.</li>
+      <li><strong>Custom skill:</strong> copy <code>~/.agent-browser/skills/core/</code> as a starting template and edit for your workflow (login helpers, site-specific selectors).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>Profiles &amp; auth</h2>
+    <div class="cmd-list">
+      <code>agent-browser profiles</code>
+      <code>--profile Default open gmail.com</code>
+      <code>--profile ~/.myapp open x.com</code>
+      <code>--session-name myapp open x.com</code>
+      <code>--auto-connect snapshot</code>
+      <code>--cdp 9222 snapshot</code>
+      <code>auth save gh --url github.com/login \</code>
+      <code>  --username me --password-stdin</code>
+      <code>auth login gh</code>
+      <code>auth list</code>
+      <code>--state ./auth.json open app.com</code>
+      <code>--auto-connect state save ./auth.json</code>
+    </div>
+    <p class="note"><code>--profile</code> reuses your real Chrome login state. <code>--session-name</code> auto-saves cookies + localStorage per name.</p>
+  </section>
+
+  <section>
+    <h2>Sessions &amp; tabs</h2>
+    <div class="cmd-list">
+      <code>--session myrun open x.com     # isolate</code>
+      <code>agent-browser session</code>
+      <code>agent-browser session list</code>
+      <code>agent-browser close</code>
+      <code>agent-browser close --all</code>
+      <code>tab new https://x.com</code>
+      <code>tab list</code>
+      <code>tab 2                          # switch</code>
+      <code>tab close</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Network &amp; storage</h2>
+    <div class="cmd-list">
+      <code>network route "**/api/**" --abort</code>
+      <code>network route "**/api/x" --body '{"ok":true}'</code>
+      <code>network unroute</code>
+      <code>network requests --filter api</code>
+      <code>network har start ./net.har</code>
+      <code>network har stop</code>
+      <code>cookies get</code>
+      <code>cookies set name=val --domain x.com</code>
+      <code>cookies clear</code>
+      <code>storage local</code>
+      <code>storage session</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Debug</h2>
+    <div class="cmd-list">
+      <code>agent-browser console          # page console</code>
+      <code>agent-browser errors</code>
+      <code>agent-browser highlight @e1</code>
+      <code>agent-browser inspect          # open DevTools</code>
+      <code>agent-browser eval "document.title"</code>
+      <code>agent-browser trace start ./t.json</code>
+      <code>agent-browser trace stop</code>
+      <code>agent-browser record start ./v.webm</code>
+      <code>agent-browser record stop</code>
+      <code>agent-browser diff snapshot</code>
+      <code>agent-browser diff screenshot --baseline</code>
+      <code>agent-browser -v open x.com    # verbose</code>
+      <code>agent-browser --debug ...      # debug logs</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Settings &amp; environment</h2>
+    <div class="cmd-list">
+      <code>set viewport 1440 900</code>
+      <code>set device "iPhone 15 Pro"</code>
+      <code>set geo 37.77 -122.41</code>
+      <code>set offline on</code>
+      <code>set media dark reduced-motion</code>
+      <code>set headers '{"Authorization":"Bearer x"}'</code>
+      <code>--headed open x.com            # show window</code>
+      <code>--color-scheme dark open x.com</code>
+      <code>--proxy http://user:pw@h:7890</code>
+      <code>--ignore-https-errors</code>
+      <code>--allowed-domains "x.com,*.y.com"</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Batch &amp; chaining</h2>
+    <div class="cmd-list">
+      <code>agent-browser open x.com \</code>
+      <code>  &amp;&amp; agent-browser snapshot -i \</code>
+      <code>  &amp;&amp; agent-browser screenshot</code>
+      <code>agent-browser batch \</code>
+      <code>  "open x.com" \</code>
+      <code>  "fill @e1 hello" \</code>
+      <code>  "click @e2"</code>
+      <code>agent-browser batch --bail ...  # stop on err</code>
+    </div>
+    <p class="note">Daemon keeps the browser alive between calls &mdash; shell <code>&amp;&amp;</code> chains reuse state without relaunching Chrome.</p>
+  </section>
+
+  <section>
+    <h2>AI chat &amp; dashboard</h2>
+    <div class="cmd-list">
+      <code>chat "open google and search cats"</code>
+      <code>chat                            # REPL</code>
+      <code>-q chat "summarize this page"</code>
+      <code>--model anthropic/claude-opus-4-7 chat "&hellip;"</code>
+      <code>dashboard start                 # :4848</code>
+      <code>dashboard start --port 9000</code>
+      <code>dashboard stop</code>
+      <code>stream enable                   # WS live events</code>
+      <code>stream status</code>
+    </div>
+    <p class="note">Chat needs <code>AI_GATEWAY_API_KEY</code>. Dashboard gives live view of sessions, traces, network.</p>
+  </section>
+
+</div>
+
+<footer>
+  Tip: one browser instance per <code>--session</code>. Daemon stays warm between calls. Kill everything: <code>agent-browser close --all</code>.
+</footer>
+
+</div>
+</body>
+</html>
