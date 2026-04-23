@@ -384,6 +384,36 @@
   </section>
 
   <section>
+    <h2>Copy / paste</h2>
+    <dl>
+      <dt>Mouse drag</dt>
+      <dd>Select text &rarr; auto-copied (<code>copy_on_select true</code>)</dd>
+
+      <dt><kbd>Shift</kbd>-drag</dt>
+      <dd>Bypass zellij, native terminal select</dd>
+
+      <dt><kbd>Cmd</kbd><span class="plus">+</span><kbd>V</kbd> / <kbd>Ctrl</kbd><span class="plus">+</span><kbd>Shift</kbd><span class="plus">+</span><kbd>V</kbd></dt>
+      <dd>Paste (terminal handles it)</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">s</kbd> then <kbd>s</kbd></dt>
+      <dd>Enter search in scrollback</dd>
+
+      <dt><kbd>n</kbd> / <kbd>p</kbd></dt>
+      <dd>Next / prev match (in search)</dd>
+
+      <dt><kbd>c</kbd> / <kbd>w</kbd></dt>
+      <dd>Toggle case / whole-word</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">s</kbd> then <kbd>e</kbd></dt>
+      <dd>Open scrollback in <code>$EDITOR</code> &mdash; yank there</dd>
+
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">g</kbd></dt>
+      <dd>Lock input &mdash; pass paste shortcuts through to vim/tmux</dd>
+    </dl>
+    <p class="note" style="font-size:12.5px;color:var(--text-faint);margin:0.75rem 0 0;">Config keys in <code>config.kdl</code>: <code>copy_command "pbcopy"</code> (mac) / <code>"wl-copy"</code> / <code>"xclip -selection clipboard"</code>, <code>copy_clipboard "system"</code>, <code>copy_on_select true</code>.</p>
+  </section>
+
+  <section>
     <h2>Session mode</h2>
     <dl>
       <dt><kbd>d</kbd></dt>
