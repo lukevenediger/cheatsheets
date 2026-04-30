@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>harlequin cheatsheet</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root {
+    --bg: #faf9f5;
+    --surface: #ffffff;
+    --border: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.2);
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --text-faint: #888;
+    --accent: #c96442;
+    --kbd-bg: #f3f1e9;
+    --kbd-border: rgba(0, 0, 0, 0.15);
+    --code: #3c3a34;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #f0ece3;
+      --text-muted: #a8a59b;
+      --text-faint: #7a776e;
+      --accent: #d97757;
+      --kbd-bg: #2f2f2f;
+      --kbd-border: rgba(255, 255, 255, 0.18);
+      --code: #d0ccc0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .prefix-note {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .prefix-note strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .meta {
+    margin-top: 0.75rem;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: baseline;
+  }
+
+  .meta .label {
+    color: var(--text-faint);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 0.4rem;
+  }
+
+  .meta a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .meta a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  section {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  section.wide {
+    grid-column: 1 / -1;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+  }
+
+  dt {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  kbd {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--kbd-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  kbd.prefix {
+    color: var(--accent);
+  }
+
+  .plus {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin: 0 2px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    background: var(--kbd-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .cmd-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .cmd-list code {
+    display: inline-block;
+  }
+
+  pre {
+    margin: 0;
+    padding: 0.75rem 0.9rem;
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow-x: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    line-height: 1.5;
+  }
+
+  pre code {
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  @media print {
+    body { background: white; color: black; }
+    .container { padding: 1rem; max-width: none; }
+    section { break-inside: avoid; page-break-inside: avoid; }
+    .grid { gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>harlequin cheatsheet</h1>
+  <p class="subtitle">TUI SQL IDE for DuckDB, Postgres, SQLite, MySQL, BigQuery, Databricks, and more.</p>
+  <div class="meta">
+    <span><span class="label">Home</span><a href="https://harlequin.sh">harlequin.sh</a></span>
+    <span><span class="label">Repo</span><a href="https://github.com/tconbeer/harlequin">tconbeer/harlequin</a></span>
+    <span><span class="label">Install</span><code>uv tool install harlequin</code></span>
+  </div>
+  <div class="prefix-note">
+    <strong>Default keymap:</strong> VS Code-style. Run query <kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">Enter</kbd>. Cycle focus <kbd>F2</kbd> editor &harr; <kbd>F5</kbd> results &harr; <kbd>F6</kbd> catalog. Help <kbd>F1</kbd>.
+  </div>
+</header>
+
+<div class="grid">
+
+  <section>
+    <h2>Install</h2>
+    <div class="cmd-list">
+      <code>uv tool install harlequin</code>
+      <code>pipx install harlequin</code>
+      <code>pip install harlequin</code>
+      <code>brew install harlequin</code>
+      <code># with adapter extras:</code>
+      <code>uv tool install 'harlequin[postgres]'</code>
+      <code>uv tool install 'harlequin[postgres,mysql,s3]'</code>
+      <code># community adapter (separate pkg):</code>
+      <code>uv tool install harlequin-snowflake</code>
+    </div>
+    <p style="font-size:12.5px;color:var(--text-faint);margin:0.75rem 0 0;">Python 3.9+. DuckDB and SQLite ship built-in &mdash; no extra needed.</p>
+  </section>
+
+  <section>
+    <h2>Adapters (extras)</h2>
+    <div class="cmd-list">
+      <code>postgres</code>
+      <code>mysql</code>
+      <code>bigquery</code>
+      <code>databricks</code>
+      <code>trino</code>
+      <code>odbc</code>
+      <code>adbc</code>
+      <code>cassandra</code>
+      <code>nebulagraph</code>
+      <code>s3</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Launch</h2>
+    <div class="cmd-list">
+      <code>harlequin                              # DuckDB in-mem</code>
+      <code>harlequin path/to/duck.db              # DuckDB file</code>
+      <code>harlequin -a sqlite db.sqlite</code>
+      <code>harlequin -a postgres \</code>
+      <code>  "postgres://user:pw@host:5432/db"</code>
+      <code>harlequin -a mysql --host h \</code>
+      <code>  --user u --database d</code>
+      <code>harlequin -a bigquery \</code>
+      <code>  --project my-project</code>
+      <code>harlequin -a databricks \</code>
+      <code>  --server-hostname H --http-path P \</code>
+      <code>  --access-token T</code>
+      <code>harlequin --profile prod-pg</code>
+      <code>harlequin --help                       # adapter opts</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>App keys</h2>
+    <dl>
+      <dt><kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">Enter</kbd></dt>
+      <dd>Run query (also <kbd>Ctrl</kbd><span class="plus">+</span><kbd>J</kbd>)</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>C</kbd></dt>
+      <dd>Cancel running query</dd>
+
+      <dt><kbd>F4</kbd></dt>
+      <dd>Format query</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>S</kbd> / <kbd>O</kbd></dt>
+      <dd>Save / open query</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>N</kbd> / <kbd>W</kbd></dt>
+      <dd>New / close buffer</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>K</kbd></dt>
+      <dd>Next buffer</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>E</kbd></dt>
+      <dd>Export results</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>R</kbd></dt>
+      <dd>Refresh catalog</dd>
+
+      <dt><kbd>F8</kbd></dt>
+      <dd>Query history</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Q</kbd></dt>
+      <dd>Quit</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Focus / view</h2>
+    <dl>
+      <dt><kbd>F2</kbd></dt>
+      <dd>Focus editor</dd>
+
+      <dt><kbd>F5</kbd></dt>
+      <dd>Focus results</dd>
+
+      <dt><kbd>F6</kbd></dt>
+      <dd>Focus data catalog</dd>
+
+      <dt><kbd>Tab</kbd> / <kbd>Shift</kbd><span class="plus">+</span><kbd>Tab</kbd></dt>
+      <dd>Cycle focus</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>B</kbd> / <kbd>F9</kbd></dt>
+      <dd>Toggle sidebar</dd>
+
+      <dt><kbd>F10</kbd></dt>
+      <dd>Toggle full screen</dd>
+
+      <dt><kbd>F1</kbd></dt>
+      <dd>Help overlay</dd>
+
+      <dt><kbd>F12</kbd></dt>
+      <dd>Debug info</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Editor</h2>
+    <dl>
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>F</kbd></dt>
+      <dd>Find</dd>
+
+      <dt><kbd>F3</kbd></dt>
+      <dd>Find next</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>G</kbd></dt>
+      <dd>Go to line</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>/</kbd></dt>
+      <dd>Toggle comment</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>&larr;</kbd> / <kbd>&rarr;</kbd></dt>
+      <dd>Word jump</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Home</kbd> / <kbd>End</kbd></dt>
+      <dd>Doc start / end</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>A</kbd></dt>
+      <dd>Select all</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Z</kbd> / <kbd>Y</kbd></dt>
+      <dd>Undo / redo</dd>
+
+      <dt><kbd>Shift</kbd><span class="plus">+</span><kbd>Del</kbd></dt>
+      <dd>Delete line</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Data catalog</h2>
+    <dl>
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>Enter</kbd></dt>
+      <dd>Insert name into editor</dd>
+
+      <dt><kbd>Ctrl</kbd><span class="plus">+</span><kbd>C</kbd></dt>
+      <dd>Copy name</dd>
+
+      <dt><kbd>Space</kbd></dt>
+      <dd>Toggle node</dd>
+
+      <dt><kbd>Enter</kbd></dt>
+      <dd>Open node</dd>
+
+      <dt><kbd>.</kbd></dt>
+      <dd>Context menu</dd>
+    </dl>
+  </section>
+
+  <section>
+    <h2>Themes</h2>
+    <div class="cmd-list">
+      <code>harlequin       # default</code>
+      <code>monokai</code>
+      <code>dracula</code>
+      <code>nord</code>
+      <code>gruvbox</code>
+      <code>tokyo-night</code>
+      <code>flexoki</code>
+      <code>catppuccin-latte</code>
+      <code>catppuccin-mocha</code>
+      <code>solarized-light</code>
+      <code>textual-dark</code>
+      <code>textual-light</code>
+    </div>
+  </section>
+
+  <section class="wide">
+    <h2>Config &amp; profiles</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin:0 0 0.75rem;">Path: <code>~/.config/harlequin/config.toml</code> (XDG). Also reads <code>~/.harlequin.toml</code>, <code>./.harlequin.toml</code>, <code>./pyproject.toml</code> (<code>[tool.harlequin]</code>). Override with <code>--config-path</code>. Generate interactively: <code>harlequin --config</code>. Live key dump: <code>harlequin --keys</code>.</p>
+<pre><code>default_profile = "local-duck"
+
+[profiles.local-duck]
+adapter = "duckdb"
+conn_str = ["./my.db"]
+theme = "monokai"
+
+[profiles.prod-pg]
+adapter = "postgres"
+host = "db.example.com"
+port = 5432
+user = "me"
+database = "app"
+
+# layered keymaps: vscode base + custom overrides
+keymap_name = ["vscode", "my_keys"]
+
+[[keymaps]]
+name = "my_keys"
+bindings = [
+  { keys = "ctrl+t", action = "new_buffer" },
+]</code></pre>
+  </section>
+
+</div>
+
+<footer>
+  Tip: <code>harlequin --limit 1000</code> caps result rows. <code>Ctrl</code><span class="plus">+</span><code>E</code> exports CSV / Parquet / JSON via DuckDB engine even when querying remote DBs.
+</footer>
+
+</div>
+</body>
+</html>

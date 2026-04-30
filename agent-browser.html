@@ -407,33 +407,27 @@
   </section>
 
   <section class="wide">
-    <h2>Create a Claude skill for agent-browser</h2>
-    <p class="note">The CLI ships skill content via <code>agent-browser skills</code>. Wire it into Claude Code by dropping a <code>SKILL.md</code> at <code>~/.claude/skills/agent-browser/SKILL.md</code> &mdash; Claude loads it on session start.</p>
-    <div class="cmd-list">
+    <h2>Install Claude Code skill</h2>
+    <p class="note">CLI ships skill content via <code>agent-browser skills</code>. Output already includes the YAML frontmatter Claude Code needs &mdash; pipe straight to <code>SKILL.md</code>.</p>
+    <p class="note" style="margin-top:1rem;"><strong>One-liner (user-wide):</strong></p>
+<pre><code>mkdir -p ~/.claude/skills/agent-browser \
+  &amp;&amp; agent-browser skills get core --full \
+       &gt; ~/.claude/skills/agent-browser/SKILL.md</code></pre>
+    <p class="note" style="margin-top:1rem;"><strong>Project-scoped:</strong> swap path for <code>&lt;repo&gt;/.claude/skills/agent-browser/SKILL.md</code>. Project skills override user skills.</p>
+    <div class="cmd-list" style="margin-top:1rem;">
       <code>agent-browser skills list                  # all built-in skills</code>
-      <code>agent-browser skills get core              # overview + common patterns</code>
-      <code>agent-browser skills get core --full       # full command reference</code>
+      <code>agent-browser skills get core              # overview only</code>
+      <code>agent-browser skills get core --full       # + full command reference</code>
       <code>agent-browser skills get electron          # specialized: electron apps</code>
       <code>agent-browser skills get slack             # specialized: slack</code>
-      <code>agent-browser skills path core             # print directory of skill files</code>
+      <code>agent-browser skills get dogfood           # exploratory web-app testing</code>
+      <code>agent-browser skills path core             # print skill dir</code>
     </div>
-    <p class="note" style="margin-top:1rem;"><strong>One-liner install into Claude Code:</strong></p>
-<pre><code>mkdir -p ~/.claude/skills/agent-browser
-agent-browser skills get core --full &gt; ~/.claude/skills/agent-browser/SKILL.md</code></pre>
-    <p class="note" style="margin-top:0.75rem;"><strong>SKILL.md frontmatter</strong> (add at top if not already present &mdash; required by Claude Code):</p>
-<pre><code>---
-name: agent-browser
-description: Browser automation CLI for AI agents. Use when the user needs
-  to navigate pages, fill forms, click buttons, take screenshots, extract
-  data, or automate any browser task.
-allowed-tools: Bash(agent-browser:*), Bash(npx agent-browser:*)
----</code></pre>
-    <ul class="tips" style="margin-top:0.75rem;">
-      <li><strong>Scope:</strong> user-wide at <code>~/.claude/skills/</code>, or project-scoped at <code>&lt;repo&gt;/.claude/skills/</code>. Project overrides user.</li>
-      <li><strong>Refresh:</strong> after <code>brew upgrade agent-browser</code>, re-run <code>skills get core --full &gt; SKILL.md</code> &mdash; skills are version-matched to the CLI.</li>
-      <li><strong>Discover:</strong> the <code>find-skills</code> skill in Claude Code can auto-suggest and install agent skills on demand.</li>
-      <li><strong>Verify:</strong> <code>/</code> in Claude Code then check the skill list, or look for <code>agent-browser</code> in the session&rsquo;s available-skills block.</li>
-      <li><strong>Custom skill:</strong> copy <code>~/.agent-browser/skills/core/</code> as a starting template and edit for your workflow (login helpers, site-specific selectors).</li>
+    <ul class="tips" style="margin-top:1rem;">
+      <li><strong>Refresh after upgrade:</strong> skills are version-matched to the CLI &mdash; re-run the one-liner after <code>brew upgrade agent-browser</code>.</li>
+      <li><strong>Verify:</strong> start a new Claude Code session &mdash; <code>agent-browser</code> appears in the available-skills list.</li>
+      <li><strong>Discover more:</strong> Claude Code&rsquo;s <code>find-skills</code> skill can suggest and install agent skills on demand.</li>
+      <li><strong>Stack specialized skills:</strong> install <code>core</code> + a domain skill (e.g. <code>slack</code>) at sibling paths under <code>~/.claude/skills/</code>.</li>
     </ul>
   </section>
 

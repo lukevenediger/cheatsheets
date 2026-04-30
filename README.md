@@ -11,6 +11,7 @@ Single-file HTML. No build step. Open in any browser or serve as a static site.
 - [tailscale](tailscale.html) — CLI for the WireGuard-based mesh VPN
 - [docker](docker.html) — containers, images, volumes, networks, compose
 - [agent-browser](agent-browser.html) — browser automation CLI for AI agents
+- [harlequin](harlequin.html) — TUI SQL IDE for DuckDB, Postgres, SQLite, and more
 
 Live: https://lukevenediger.github.io/cheatsheets/
 
