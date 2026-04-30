@@ -255,7 +255,7 @@
   <div class="meta">
     <span><span class="label">Home</span><a href="https://harlequin.sh">harlequin.sh</a></span>
     <span><span class="label">Repo</span><a href="https://github.com/tconbeer/harlequin">tconbeer/harlequin</a></span>
-    <span><span class="label">Install</span><code>uv tool install harlequin</code></span>
+    <span><span class="label">Install</span><code>brew install harlequin</code> · <code>uv tool install harlequin</code></span>
   </div>
   <div class="prefix-note">
     <strong>Default keymap:</strong> VS Code-style. Run query <kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">Enter</kbd>. Cycle focus <kbd>F2</kbd> editor &harr; <kbd>F5</kbd> results &harr; <kbd>F6</kbd> catalog. Help <kbd>F1</kbd>.
@@ -451,26 +451,6 @@
   </section>
 
   <section class="wide">
-    <h2>Avoid zellij / tmux <kbd>Ctrl</kbd> conflicts</h2>
-    <p style="font-size:13px;color:var(--text-muted);margin:0 0 0.75rem;">Inside a zellij or tmux pane, several harlequin <kbd>Ctrl</kbd> bindings get swallowed by the multiplexer before reaching the TUI. Worst offenders: <kbd>Ctrl</kbd><span class="plus">+</span><kbd>Q</kbd> (zellij quits the whole session), <kbd>Ctrl</kbd><span class="plus">+</span><kbd>S</kbd> (zellij scroll mode), <kbd>Ctrl</kbd><span class="plus">+</span><kbd>N</kbd> / <kbd>Ctrl</kbd><span class="plus">+</span><kbd>O</kbd> (zellij resize / session modes). Layer an <kbd>Alt</kbd>-prefix keymap on top of <code>vscode</code> to dodge the collisions:</p>
-<pre><code>keymap_name = ["vscode", "no-mux-conflict"]
-
-[[keymaps]]
-name = "no-mux-conflict"
-bindings = [
-  { keys = "alt+q", action = "quit",          key_display = "Alt+Q" },
-  { keys = "alt+s", action = "save_buffer",   key_display = "Alt+S" },
-  { keys = "alt+o", action = "load_buffer",   key_display = "Alt+O" },
-  { keys = "alt+n", action = "new_buffer",    key_display = "Alt+N" },
-  { keys = "alt+w", action = "close_buffer",  key_display = "Alt+W" },
-  { keys = "alt+e", action = "export",        key_display = "Alt+E" },
-  { keys = "alt+r", action = "refresh_catalog", key_display = "Alt+R" },
-  { keys = "alt+b", action = "toggle_sidebar", key_display = "Alt+B" },
-]</code></pre>
-    <p style="font-size:12.5px;color:var(--text-faint);margin:0.75rem 0 0;">Mnemonic stays identical &mdash; only swap <kbd>Ctrl</kbd> for <kbd>Alt</kbd> (Option on macOS; enable &ldquo;Use Option as Meta&rdquo; in Terminal/iTerm/Ghostty). <kbd>Ctrl</kbd><span class="plus">+</span><kbd>Enter</kbd> for run query is safe &mdash; multiplexers don&rsquo;t bind it. Verify your live map: <code>harlequin --keys</code>.</p>
-  </section>
-
-  <section class="wide">
     <h2>Config &amp; profiles</h2>
     <p style="font-size:13px;color:var(--text-muted);margin:0 0 0.75rem;">Path: <code>~/.config/harlequin/config.toml</code> (XDG). Also reads <code>~/.harlequin.toml</code>, <code>./.harlequin.toml</code>, <code>./pyproject.toml</code> (<code>[tool.harlequin]</code>). Override with <code>--config-path</code>. Generate interactively: <code>harlequin --config</code>. Live key dump: <code>harlequin --keys</code>.</p>
 <pre><code>default_profile = "local-duck"
@@ -495,6 +475,26 @@ name = "my_keys"
 bindings = [
   { keys = "ctrl+t", action = "new_buffer" },
 ]</code></pre>
+  </section>
+
+  <section class="wide">
+    <h2>Avoid zellij / tmux <kbd>Ctrl</kbd> conflicts</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin:0 0 0.75rem;">Inside a zellij or tmux pane, several harlequin <kbd>Ctrl</kbd> bindings get swallowed by the multiplexer before reaching the TUI. Worst offenders: <kbd>Ctrl</kbd><span class="plus">+</span><kbd>Q</kbd> (zellij quits the whole session), <kbd>Ctrl</kbd><span class="plus">+</span><kbd>S</kbd> (zellij scroll mode), <kbd>Ctrl</kbd><span class="plus">+</span><kbd>N</kbd> / <kbd>Ctrl</kbd><span class="plus">+</span><kbd>O</kbd> (zellij resize / session modes). Layer an <kbd>Alt</kbd>-prefix keymap on top of <code>vscode</code> to dodge the collisions:</p>
+<pre><code>keymap_name = ["vscode", "no-mux-conflict"]
+
+[[keymaps]]
+name = "no-mux-conflict"
+bindings = [
+  { keys = "alt+q", action = "quit",          key_display = "Alt+Q" },
+  { keys = "alt+s", action = "save_buffer",   key_display = "Alt+S" },
+  { keys = "alt+o", action = "load_buffer",   key_display = "Alt+O" },
+  { keys = "alt+n", action = "new_buffer",    key_display = "Alt+N" },
+  { keys = "alt+w", action = "close_buffer",  key_display = "Alt+W" },
+  { keys = "alt+e", action = "export",        key_display = "Alt+E" },
+  { keys = "alt+r", action = "refresh_catalog", key_display = "Alt+R" },
+  { keys = "alt+b", action = "toggle_sidebar", key_display = "Alt+B" },
+]</code></pre>
+    <p style="font-size:12.5px;color:var(--text-faint);margin:0.75rem 0 0;">Mnemonic stays identical &mdash; only swap <kbd>Ctrl</kbd> for <kbd>Alt</kbd> (Option on macOS; enable &ldquo;Use Option as Meta&rdquo; in Terminal/iTerm/Ghostty). <kbd>Ctrl</kbd><span class="plus">+</span><kbd>Enter</kbd> for run query is safe &mdash; multiplexers don&rsquo;t bind it. Verify your live map: <code>harlequin --keys</code>.</p>
   </section>
 
 </div>
