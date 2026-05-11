@@ -12,6 +12,7 @@ Single-file HTML. No build step. Open in any browser or serve as a static site.
 - [docker](docker.html) — containers, images, volumes, networks, compose
 - [agent-browser](agent-browser.html) — browser automation CLI for AI agents
 - [harlequin](harlequin.html) — TUI SQL IDE for DuckDB, Postgres, SQLite, and more
+- [cloudflare](cloudflare.html) — tunnels, Zero Trust Access, WAF for public endpoints
 
 Live: https://lukevenediger.github.io/cheatsheets/
 

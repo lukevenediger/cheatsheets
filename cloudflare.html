@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cloudflare cheatsheet</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<style>
+  :root {
+    --bg: #faf9f5;
+    --surface: #ffffff;
+    --border: rgba(0, 0, 0, 0.12);
+    --border-strong: rgba(0, 0, 0, 0.2);
+    --text: #1a1a1a;
+    --text-muted: #666;
+    --text-faint: #888;
+    --accent: #c96442;
+    --kbd-bg: #f3f1e9;
+    --kbd-border: rgba(0, 0, 0, 0.15);
+    --code: #3c3a34;
+    --radius: 8px;
+    --radius-lg: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a1a;
+      --surface: #242424;
+      --border: rgba(255, 255, 255, 0.1);
+      --border-strong: rgba(255, 255, 255, 0.18);
+      --text: #f0ece3;
+      --text-muted: #a8a59b;
+      --text-faint: #7a776e;
+      --accent: #d97757;
+      --kbd-bg: #2f2f2f;
+      --kbd-border: rgba(255, 255, 255, 0.18);
+      --code: #d0ccc0;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin: 0;
+  }
+
+  .prefix-note {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  .prefix-note strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .meta {
+    margin-top: 0.75rem;
+    font-size: 13px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.5rem;
+    align-items: baseline;
+  }
+
+  .meta .label {
+    color: var(--text-faint);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-right: 0.4rem;
+  }
+
+  .meta a {
+    color: var(--text-muted);
+    text-decoration: none;
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .meta a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.25rem;
+  }
+
+  section {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  section.wide {
+    grid-column: 1 / -1;
+  }
+
+  h2 {
+    font-size: 14px;
+    font-weight: 500;
+    margin: 0 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 0.5px solid var(--border);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+  }
+
+  dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 0.5rem 1rem;
+    align-items: baseline;
+  }
+
+  dt {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+
+  dd {
+    margin: 0;
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  kbd {
+    display: inline-block;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--kbd-border);
+    border-radius: 4px;
+    padding: 1px 6px;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  kbd.prefix {
+    color: var(--accent);
+  }
+
+  .plus {
+    color: var(--text-faint);
+    font-size: 11px;
+    margin: 0 2px;
+  }
+
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    background: var(--kbd-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .cmd-list {
+    display: grid;
+    gap: 0.5rem;
+  }
+
+  .cmd-list code {
+    display: inline-block;
+  }
+
+  pre {
+    margin: 0;
+    padding: 0.75rem 0.9rem;
+    background: var(--kbd-bg);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    overflow-x: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--code);
+    line-height: 1.5;
+  }
+
+  pre code {
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
+    color: inherit;
+  }
+
+  ul.tips {
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  ul.tips li {
+    margin-bottom: 0.4rem;
+  }
+
+  ul.tips li strong {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  footer {
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 13px;
+    color: var(--text-faint);
+    text-align: center;
+  }
+
+  @media print {
+    body { background: white; color: black; }
+    .container { padding: 1rem; max-width: none; }
+    section { break-inside: avoid; page-break-inside: avoid; }
+    .grid { gap: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <h1>cloudflare cheatsheet</h1>
+  <p class="subtitle">Tunnels from home/desktop to the public internet — and Zero Trust Access + WAF to keep them locked down.</p>
+  <div class="meta">
+    <span><span class="label">Console</span><a href="https://dash.cloudflare.com">dash.cloudflare.com</a></span>
+    <span><span class="label">Zero Trust</span><a href="https://one.dash.cloudflare.com">one.dash.cloudflare.com</a></span>
+    <span><span class="label">Docs</span><a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/">tunnel docs</a></span>
+    <span><span class="label">Install</span><code>brew install cloudflared</code></span>
+  </div>
+  <div class="prefix-note">
+    <strong>Pattern:</strong> <code>cloudflared</code> on the desktop creates an outbound mTLS connection to Cloudflare. Public DNS for <code>app.yours.com</code> CNAMEs to <code>&lt;uuid&gt;.cfargotunnel.com</code>. Add a Zero Trust <strong>Access</strong> policy on that hostname so requests must authenticate (Google / GitHub / one-time PIN) before the tunnel forwards them.
+  </div>
+</header>
+
+<div class="grid">
+
+  <section>
+    <h2>Install &amp; auth</h2>
+    <div class="cmd-list">
+      <code>brew install cloudflared          # mac</code>
+      <code>sudo apt install cloudflared      # debian/ubuntu</code>
+      <code>winget install cloudflare.cloudflared</code>
+      <code>cloudflared --version</code>
+      <code>cloudflared update</code>
+      <code>cloudflared tunnel login           # browser SSO</code>
+      <code># cert lands in ~/.cloudflared/cert.pem</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Tunnel lifecycle</h2>
+    <div class="cmd-list">
+      <code>cloudflared tunnel create home-desk</code>
+      <code>cloudflared tunnel list</code>
+      <code>cloudflared tunnel info home-desk</code>
+      <code>cloudflared tunnel token home-desk   # token-only mode</code>
+      <code>cloudflared tunnel delete home-desk</code>
+      <code>cloudflared tunnel cleanup home-desk # stale conns</code>
+    </div>
+    <p style="font-size:12.5px;color:var(--text-faint);margin:0.75rem 0 0;">Creates UUID + <code>~/.cloudflared/&lt;uuid&gt;.json</code> credentials.</p>
+  </section>
+
+  <section>
+    <h2>DNS routing</h2>
+    <div class="cmd-list">
+      <code>cloudflared tunnel route dns \</code>
+      <code>  home-desk app.yours.com</code>
+      <code>cloudflared tunnel route ip \</code>
+      <code>  add 10.0.0.0/24 home-desk      # WARP-to-Tunnel</code>
+      <code>cloudflared tunnel route lb \</code>
+      <code>  home-desk pool.yours.com pool-1</code>
+    </div>
+    <p style="font-size:12.5px;color:var(--text-faint);margin:0.75rem 0 0;">Auto-creates orange-cloud CNAME to <code>&lt;uuid&gt;.cfargotunnel.com</code>.</p>
+  </section>
+
+  <section>
+    <h2>Run</h2>
+    <div class="cmd-list">
+      <code>cloudflared tunnel run home-desk</code>
+      <code>cloudflared tunnel run \</code>
+      <code>  --token &lt;TOKEN&gt;</code>
+      <code>cloudflared tunnel \</code>
+      <code>  --url http://localhost:3000 \</code>
+      <code>  run home-desk                 # quick-test</code>
+      <code>cloudflared tunnel \</code>
+      <code>  --url http://localhost:3000   # try-cloudflare.com</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Service / autostart</h2>
+    <div class="cmd-list">
+      <code>sudo cloudflared service install \</code>
+      <code>  &lt;TOKEN&gt;                       # token mode</code>
+      <code>sudo cloudflared service install   # config-file mode</code>
+      <code>sudo cloudflared service uninstall</code>
+      <code># macOS launchd / linux systemd</code>
+      <code>sudo launchctl list | grep cloud</code>
+      <code>sudo systemctl status cloudflared</code>
+      <code>sudo systemctl restart cloudflared</code>
+      <code>sudo journalctl -u cloudflared -f</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>Debug</h2>
+    <div class="cmd-list">
+      <code>cloudflared tunnel run \</code>
+      <code>  --loglevel debug home-desk</code>
+      <code>cloudflared tunnel \</code>
+      <code>  --metrics localhost:9000 run ...</code>
+      <code>curl localhost:9000/metrics</code>
+      <code>cloudflared tunnel ingress validate</code>
+      <code>cloudflared tunnel ingress rule \</code>
+      <code>  https://app.yours.com/health</code>
+      <code>dig +short app.yours.com</code>
+    </div>
+  </section>
+
+  <section class="wide">
+    <h2>Tunnel config (<code>~/.cloudflared/config.yml</code>)</h2>
+<pre><code>tunnel: 5f6e1b8e-...                  # UUID from `tunnel list`
+credentials-file: /root/.cloudflared/5f6e1b8e-....json
+
+# Optional: prefer the config file location for the service
+# loglevel: info
+# metrics: 0.0.0.0:9000
+
+ingress:
+  # multiple hostnames -&gt; multiple local services
+  - hostname: ssh.yours.com
+    service: ssh://localhost:22
+  - hostname: app.yours.com
+    service: http://localhost:3000
+    originRequest:
+      noTLSVerify: true             # only when origin self-signed
+      connectTimeout: 10s
+  - hostname: rdp.yours.com         # public RDP via WARP client only
+    service: rdp://localhost:3389
+  # catch-all MUST be last
+  - service: http_status:404</code></pre>
+    <p style="font-size:12.5px;color:var(--text-faint);margin:0.75rem 0 0;">Each ingress entry maps one Cloudflare hostname to one origin service running on this machine. Service supports <code>http://</code>, <code>https://</code>, <code>tcp://</code>, <code>ssh://</code>, <code>rdp://</code>, <code>unix:</code>, <code>hello-world</code>.</p>
+  </section>
+
+  <section class="wide">
+    <h2>Lock it down: Zero Trust Access</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin:0 0 0.75rem;">A bare tunnel exposes your desktop service to the open internet. Wrap each public hostname in a Zero Trust <strong>Access application</strong> so Cloudflare blocks unauthenticated traffic <em>before</em> it crosses the tunnel.</p>
+    <ol style="font-size:13.5px;color:var(--text-muted);padding-left:1.2rem;margin:0;">
+      <li><strong>Add identity provider:</strong> Zero Trust &rarr; Settings &rarr; Authentication &rarr; add <em>Google</em>, <em>GitHub</em>, <em>One-time PIN</em>, or SAML/OIDC.</li>
+      <li><strong>Create Access app:</strong> Zero Trust &rarr; Access &rarr; Applications &rarr; <em>Add a self-hosted application</em>. Set <em>Application domain</em> to <code>app.yours.com</code> (the same hostname your tunnel routes).</li>
+      <li><strong>Allow policy:</strong> action <em>Allow</em>, include <em>Emails</em> = <code>me@yours.com</code> (or <em>Emails ending in</em> <code>@yours.com</code>, or an Access Group).</li>
+      <li><strong>Block everything else:</strong> add a second policy with action <em>Block</em>, include <em>Everyone</em>, lower priority.</li>
+      <li><strong>Headless / API access:</strong> use a <em>Service Auth</em> token (Access &rarr; Service Auth) and pass <code>CF-Access-Client-Id</code> / <code>CF-Access-Client-Secret</code> headers.</li>
+    </ol>
+    <p style="font-size:12.5px;color:var(--text-faint);margin:0.75rem 0 0;">For SSH/RDP, install the WARP client and use the Access for Infrastructure short-lived SSH cert flow &mdash; no static keys on the desktop.</p>
+  </section>
+
+  <section>
+    <h2>Access policies (examples)</h2>
+    <ul class="tips">
+      <li><strong>Allow my emails:</strong> <em>Emails</em> = <code>me@yours.com</code>, <code>partner@example.com</code></li>
+      <li><strong>Allow domain:</strong> <em>Emails ending in</em> <code>@yours.com</code></li>
+      <li><strong>Require MFA:</strong> add <em>Require</em> &rarr; <em>Authentication method</em> = <code>mfa</code></li>
+      <li><strong>Country fence:</strong> add <em>Require</em> &rarr; <em>Country</em> = AU, US</li>
+      <li><strong>Device posture:</strong> require WARP client + disk encryption</li>
+      <li><strong>Service token only:</strong> action <em>Service Auth</em>, include token</li>
+      <li><strong>Session TTL:</strong> shorten to <code>1h</code> on sensitive apps</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>WAF &amp; rate limit</h2>
+    <p style="font-size:13px;color:var(--text-muted);margin:0 0 0.75rem;">Layer in front of (or instead of) Access for public endpoints. <em>Security &rarr; WAF</em> in zone dashboard.</p>
+    <ul class="tips">
+      <li><strong>Managed Ruleset:</strong> enable <code>Cloudflare Managed Ruleset</code> + <code>OWASP Core Ruleset</code> &mdash; click toggle, set <em>paranoia</em> to 2.</li>
+      <li><strong>Custom rule:</strong> <code>(cf.threat_score gt 14) or (ip.geoip.country ne "AU")</code> &rarr; <em>Managed Challenge</em>.</li>
+      <li><strong>Bot fight:</strong> Security &rarr; Bots &rarr; toggle <em>Bot Fight Mode</em> (free) or <em>Super Bot Fight Mode</em> (paid).</li>
+      <li><strong>Rate limit:</strong> Security &rarr; Rate limiting rules &rarr; e.g. <code>http.request.uri.path eq "/login"</code> &rarr; 5 req/min/IP &rarr; <em>Block 10m</em>.</li>
+      <li><strong>API Shield:</strong> upload OpenAPI schema &rarr; auto-reject non-conforming requests.</li>
+      <li><strong>Geo-block fast:</strong> <code>ip.geoip.country in {"RU" "CN" "KP"}</code> &rarr; <em>Block</em>.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>WARP &amp; private networks</h2>
+    <div class="cmd-list">
+      <code>brew install --cask cloudflare-warp</code>
+      <code>warp-cli register</code>
+      <code>warp-cli connect</code>
+      <code>warp-cli status</code>
+      <code>warp-cli teams-enroll yours        # Zero Trust org</code>
+      <code>warp-cli disconnect</code>
+    </div>
+    <p style="font-size:12.5px;color:var(--text-faint);margin:0.75rem 0 0;">Pair WARP + Tunnel routes for private-network access &mdash; no public hostname needed.</p>
+  </section>
+
+  <section>
+    <h2>Wrangler (Workers, R2, KV)</h2>
+    <div class="cmd-list">
+      <code>npm i -g wrangler</code>
+      <code>wrangler login</code>
+      <code>wrangler init my-worker</code>
+      <code>wrangler dev</code>
+      <code>wrangler deploy</code>
+      <code>wrangler tail                      # live logs</code>
+      <code>wrangler r2 bucket create assets</code>
+      <code>wrangler kv namespace create CACHE</code>
+      <code>wrangler secret put API_KEY</code>
+    </div>
+  </section>
+
+  <section>
+    <h2>DNS &amp; flags</h2>
+    <div class="cmd-list">
+      <code>dig @1.1.1.1 yours.com</code>
+      <code>curl -I https://yours.com         # check CF-Cache-Status</code>
+      <code># proxy toggle (orange/grey cloud):</code>
+      <code>#   orange = traffic via CF</code>
+      <code>#   grey = DNS only, no CF protection</code>
+      <code># dev mode (3hr cache bypass) per zone</code>
+      <code># Always Use HTTPS + HSTS in SSL/TLS</code>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  Tip: never expose a tunneled desktop without Access. <code>cloudflared tunnel run</code> + nothing else = your machine on the open internet under a friendly DNS name.
+</footer>
+
+</div>
+</body>
+</html>
