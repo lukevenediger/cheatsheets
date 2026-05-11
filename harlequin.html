@@ -238,6 +238,15 @@
     text-align: center;
   }
 
+  h1 .tool-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    vertical-align: -0.4em;
+    margin-right: 0.55rem;
+    color: var(--accent);
+  }
+
   @media print {
     body { background: white; color: black; }
     .container { padding: 1rem; max-width: none; }
@@ -250,7 +259,7 @@
 <div class="container">
 
 <header>
-  <h1>harlequin cheatsheet</h1>
+  <h1><img class="tool-logo" src="logos/harlequin.svg" alt="">harlequin cheatsheet</h1>
   <p class="subtitle">TUI SQL IDE for DuckDB, Postgres, SQLite, MySQL, BigQuery, Databricks, and more.</p>
   <div class="meta">
     <span><span class="label">Home</span><a href="https://harlequin.sh">harlequin.sh</a></span>

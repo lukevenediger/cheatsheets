@@ -214,6 +214,14 @@
     text-align: center;
   }
 
+  h1 .tool-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    vertical-align: -0.4em;
+    margin-right: 0.55rem;
+  }
+
   @media print {
     body { background: white; color: black; }
     .container { padding: 1rem; max-width: none; }
@@ -226,7 +234,7 @@
 <div class="container">
 
 <header>
-  <h1>tailscale cheatsheet</h1>
+  <h1><img class="tool-logo" src="logos/tailscale.svg" alt="">tailscale cheatsheet</h1>
   <p class="subtitle">CLI for the WireGuard-based mesh VPN</p>
   <div class="meta">
     <span><span class="label">Home</span><a href="https://tailscale.com">tailscale.com</a></span>

@@ -142,6 +142,20 @@
     font-size: 17px;
     font-weight: 500;
     letter-spacing: -0.005em;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .name .card-logo {
+    width: 22px;
+    height: 22px;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  .grid a .name .card-logo[data-accent] {
+    color: var(--accent);
   }
 
   .desc {
@@ -236,7 +250,7 @@
   <li>
     <a href="tmux.html">
       <div class="card-head">
-        <span class="name">tmux</span>
+        <span class="name"><img class="card-logo" src="logos/tmux.svg" alt="">tmux</span>
         <span class="desc">terminal multiplexer<br>prefix <kbd class="prefix">Ctrl</kbd><span class="plus">+</span><kbd class="prefix">b</kbd></span>
       </div>
       <dl>
@@ -255,7 +269,7 @@
   <li>
     <a href="zellij.html">
       <div class="card-head">
-        <span class="name">zellij</span>
+        <span class="name"><img class="card-logo" src="logos/zellij.png" alt="">zellij</span>
         <span class="desc">Rust multiplexer<br>modal, <kbd>Esc</kbd> returns</span>
       </div>
       <dl>
@@ -274,7 +288,7 @@
   <li>
     <a href="tailscale.html">
       <div class="card-head">
-        <span class="name">tailscale</span>
+        <span class="name"><img class="card-logo" src="logos/tailscale.svg" alt="">tailscale</span>
         <span class="desc">mesh VPN CLI</span>
       </div>
       <dl>
@@ -293,7 +307,7 @@
   <li>
     <a href="docker.html">
       <div class="card-head">
-        <span class="name">docker</span>
+        <span class="name"><img class="card-logo" src="logos/docker.svg" alt="">docker</span>
         <span class="desc">containers &amp; compose</span>
       </div>
       <dl>
@@ -312,7 +326,7 @@
   <li>
     <a href="agent-browser.html">
       <div class="card-head">
-        <span class="name">agent-browser</span>
+        <span class="name"><img class="card-logo" src="logos/agent-browser.svg" alt="" style="color:var(--accent)">agent-browser</span>
         <span class="desc">browser automation<br>CLI for AI agents</span>
       </div>
       <dl>
@@ -331,7 +345,7 @@
   <li>
     <a href="cloudflare.html">
       <div class="card-head">
-        <span class="name">cloudflare</span>
+        <span class="name"><img class="card-logo" src="logos/cloudflare.svg" alt="">cloudflare</span>
         <span class="desc">tunnels + Zero Trust<br>desktop &rarr; internet</span>
       </div>
       <dl>
@@ -350,7 +364,7 @@
   <li>
     <a href="harlequin.html">
       <div class="card-head">
-        <span class="name">harlequin</span>
+        <span class="name"><img class="card-logo" src="logos/harlequin.svg" alt="" style="color:var(--accent)">harlequin</span>
         <span class="desc">TUI SQL IDE<br>DuckDB / PG / SQLite / &hellip;</span>
       </div>
       <dl>
